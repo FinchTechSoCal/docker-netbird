@@ -40,7 +40,7 @@ docker run --rm -v netbirdsetup_netbird_data:/source:ro -v /opt/docker/netbird:/
 docker compose down --volumes
 cd ~
 sed -i 's;\[netbird, dbr0\];\[dbr0\];g' /opt/stacks/netbird/compose.yaml
-sed -i 's;netbird_data:/var/lib/netbird;${LOCVAR1}netbird$:/var/lib/netbird;g' /opt/stacks/netbird/compose.yaml
+sed -i 's;netbird_data:/var/lib/netbird;${LOCVOL1}netbird$:/var/lib/netbird;g' /opt/stacks/netbird/compose.yaml
 
 
 
