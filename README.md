@@ -28,20 +28,39 @@ Run the quick setup script to generate the files needed, which will also generat
 
 Run the getting-started script (in a temp directory), follow the prompts:
 ```bash
-rm -fr /opt/stacks/netbird
-mkdir -p /opt/stacks/netbird
-mkdir -p /tmp/netbirdsetup
+rm -fr /opt/stacks/netbird && rm -fr /tmp/netbirdsetup
+mkdir -p /opt/stacks/netbird && mkdir -p /tmp/netbirdsetup
 cd /tmp/netbirdsetup
 curl -fsSL https://github.com/netbirdio/netbird/releases/latest/download/getting-started.sh | bash
 docker compose down
 cp config.yaml dashboard.env docker-compose.yml /opt/stacks/netbird
+mv /opt/stacks/netbird/docker-compose.yml /opt/stacks/netbird/compose.yaml
+docker run --rm -v netbirdsetup_netbird_data:/source:ro -v /opt/docker/netbird:/target alpine cp -r /source/. /target/
+docker compose down --volumes
+cd ~
+
+
 #convert named docker volume to accessible mount
-docker run --rm -v netbirdsetup_netbird_data:/source:ro -v /tmp/netbirdsetup:/backup alpine tar czf /backup/volume_backup.tar.gz -C /source .
-docker run --rm -v /opt/docker/netbird:/target -v /tmp/netbirdsetup:/backup alpine tar xzf /backup/volume_backup.tar.gz -C /target
+#docker run --rm -v netbirdsetup_netbird_data:/source:ro -v /tmp/netbirdsetup:/backup alpine tar czf /backup/volume_backup.tar.gz -C /source .
+#docker run --rm -v /opt/docker/netbird:/target -v /tmp/netbirdsetup:/backup alpine tar xzf /backup/volume_backup.tar.gz -C /target
+docker run --rm -v netbirdsetup_netbird_data:/source:ro -v /opt/docker/netbird:/target alpine cp -r /source/. /target/
 ```
 
 
 
+## NPM setup
+In NPM, create a Proxy Host:
+  Domain: <domain>
+  Forward Hostname: netbird-dashboard
+  Forward Port: 80
+  Block Common Exploits: enabled
+
+  SSL tab:
+    - Request or select existing certificate
+    - Enable 'HTTP/2 Support' (REQUIRED for gRPC)
+
+  Advanced tab:
+    - Paste contents of npm-advanced-config.txt
 
 
 
