@@ -33,17 +33,21 @@ mkdir -p /opt/stacks/netbird && mkdir -p /tmp/netbirdsetup
 cd /tmp/netbirdsetup
 curl -fsSL https://github.com/netbirdio/netbird/releases/latest/download/getting-started.sh | bash
 docker compose down
-cp config.yaml dashboard.env docker-compose.yml /opt/stacks/netbird
+#cp config.yaml dashboard.env docker-compose.yml /opt/stacks/netbird
+cp . /opt/stacks/netbird
 mv /opt/stacks/netbird/docker-compose.yml /opt/stacks/netbird/compose.yaml
 docker run --rm -v netbirdsetup_netbird_data:/source:ro -v /opt/docker/netbird:/target alpine cp -r /source/. /target/
 docker compose down --volumes
 cd ~
+sed -i 's;\[netbird, dbr0\];\[dbr0\];g' /opt/stacks/netbird/compose.yaml
+sed -i 's;netbird_data:/var/lib/netbird;${LOCVAR1}netbird$:/var/lib/netbird;g' /opt/stacks/netbird/compose.yaml
+
 
 
 #convert named docker volume to accessible mount
 #docker run --rm -v netbirdsetup_netbird_data:/source:ro -v /tmp/netbirdsetup:/backup alpine tar czf /backup/volume_backup.tar.gz -C /source .
 #docker run --rm -v /opt/docker/netbird:/target -v /tmp/netbirdsetup:/backup alpine tar xzf /backup/volume_backup.tar.gz -C /target
-docker run --rm -v netbirdsetup_netbird_data:/source:ro -v /opt/docker/netbird:/target alpine cp -r /source/. /target/
+#docker run --rm -v netbirdsetup_netbird_data:/source:ro -v /opt/docker/netbird:/target alpine cp -r /source/. /target/
 ```
 
 
